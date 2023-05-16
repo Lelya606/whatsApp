@@ -5,9 +5,9 @@ export interface IMainWrapperProps {
   children: ReactNode;
 }
 
-export const MainWrapper = ({ children }: IMainWrapperProps) => {
-  return <StyledContainer>{children}</StyledContainer>;
-};
+export const MainWrapper = ({ children }: IMainWrapperProps) => (
+  <StyledContainer>{children}</StyledContainer>
+);
 
 const StyledContainer = styled.div`
   display: flex;

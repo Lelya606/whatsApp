@@ -15,6 +15,7 @@ const StyledDialogWindow = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 1.75rem;
   height: 100%;
   border-left-width: 1px;
   border-left-color: ${({ theme }) => theme.colors.PORCELAIN};
