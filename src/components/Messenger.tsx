@@ -19,5 +19,5 @@ const StyledMessenger = styled.div`
   width: calc(100vw - 38px);
   height: calc(100vh - 38px);
   max-width: 1600px;
-  box-shadow: ${({ theme }) => theme.boxShadow};
+  box-shadow: ${({ theme }) => theme.boxShadow.block};
 `;

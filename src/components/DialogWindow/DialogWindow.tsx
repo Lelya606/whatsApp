@@ -17,14 +17,12 @@ const StyledDialogWindow = styled.div`
   align-items: center;
   padding: 1.75rem;
   height: 100%;
-  border-left-width: 1px;
-  border-left-color: ${({ theme }) => theme.colors.PORCELAIN};
-  border-left-style: solid;
   background-color: ${({ theme }) => theme.colors.PORCELAIN};
 `;
 
 const StyledTitle = styled.h1`
   text-align: center;
+  font-weight: normal;
   color: ${({ theme }) => theme.colors.RIVER_BED};
 `;
 

@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ReactComponent as Message } from 'assets/icons/massage.svg';
+import { Input } from 'components/Input/Input';
+import { ReactComponent as Plus } from 'assets/icons/plus.svg';
 
 export const Chats = () => (
   <StyledChats>
     <StyledChatsHeader>
-      <StyledIconWrapper title="Новый чат">
-        <Message />
+      <Input type="tel" placeholder="Новый чат" />
+      <StyledIconWrapper>
+        <Plus />
       </StyledIconWrapper>
     </StyledChatsHeader>
     <StyledChatsBody>
@@ -19,27 +21,40 @@ export const Chats = () => (
 );
 
 const StyledChats = styled.div`
+  border-right: 1px solid ${({ theme }) => theme.colors.LIMITED_SPRUCE};
   background-color: ${({ theme }) => theme.colors.WHITE};
 `;
 
-const StyledChatsHeader = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  padding: 0.625rem 1rem;
-  background-color: ${({ theme }) => theme.colors.ATHENS_GRAY};
-`;
-
 const StyledIconWrapper = styled.span`
-  padding: 0.5rem;
   &:hover {
     cursor: pointer;
   }
   svg {
+    width: 1.5rem;
+    height: 1.5rem;
     fill: ${({ theme }) => theme.colors.SHUTTLE_GRAY};
+    path {
+      fill: ${({ theme }) => theme.colors.SHUTTLE_GRAY};
+    }
   }
 `;
 
-const StyledChatsBody = styled.div``;
+const StyledChatsBody = styled.div`
+  position: relative;
+`;
+
+const StyledChatsHeader = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  column-gap: 0.5rem;
+  background-color: ${({ theme }) => theme.colors.WHITE};
+  box-shadow: ${({ theme }) => theme.boxShadow.light};
+
+  svg {
+    margin-top: 0.5rem;
+  }
+`;
 
 const StyledChatsText = styled.p`
   padding: 1rem 0.5rem;
@@ -50,7 +65,6 @@ const StyledChatsText = styled.p`
 `;
 
 const StyledButtonText = styled.span`
-  text-decoration: underline;
   &:hover {
     cursor: pointer;
   }
