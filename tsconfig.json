@@ -4,8 +4,10 @@
     "paths": {
       "@/*": ["src/*"],
       "@/components": ["components/*"],
+      "@/context": ["context/*"],
       "@/assets": ["assets/*"],
       "@/types": ["types/*"],
+      "@/utils": ["utils/*"],
     },
     "target": "es5",
     "lib": [

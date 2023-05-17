@@ -31,7 +31,7 @@ export const Input = ({
   );
 };
 
-const StyledInput = styled.input`
+export const StyledInput = styled.input`
   padding: 0.5rem 1.5rem;
   width: 100%;
   border: none;

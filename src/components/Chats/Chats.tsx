@@ -36,7 +36,7 @@ export const Chats = () => {
             onClick={onClickCard}
             key={title}
           />
-          <StyledSeparator />
+          <StyledSeparator key={`${title}1`} />
         </>
       )),
     [chats, activeChat],
@@ -75,7 +75,7 @@ const StyledChats = styled.div`
   background-color: ${({ theme }) => theme.colors.WHITE};
 `;
 
-const StyledIconWrapper = styled.span`
+export const StyledIconWrapper = styled.span`
   &:hover {
     cursor: pointer;
   }
@@ -90,7 +90,7 @@ const StyledChatsBody = styled.div`
   position: relative;
 `;
 
-const StyledChatsHeader = styled.div`
+export const StyledChatsHeader = styled.div`
   display: flex;
   justify-content: center;
   padding: 1rem;
