@@ -83,6 +83,7 @@
         "@typescript-eslint/no-non-null-assertion":"off",
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-use-before-define": "off",
-        "arrow-parens": "off"
+        "arrow-parens": "off",
+        "no-extra-boolean-cast": "off"
     }
 }
