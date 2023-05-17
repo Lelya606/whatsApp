@@ -11,6 +11,7 @@ import { changeFormatDate } from 'utils/common';
 export const DialogWindow = () => {
   const { activeChatData, messagesData } = useStoreContextManager();
   const { activeChat } = activeChatData;
+  const { chatId, phone } = activeChat;
   const { messages, setMessages } = messagesData;
   const [inputValue, setValueInput] = useState('');
 
@@ -30,7 +31,7 @@ export const DialogWindow = () => {
   const renderMessage = useMemo(
     () =>
       messages.map(({ message, incoming }) => (
-        <StyledMessageContainer>
+        <StyledMessageContainer key={message}>
           <StyledMessage incoming={incoming}>{message}</StyledMessage>
         </StyledMessageContainer>
       )),
@@ -38,11 +39,11 @@ export const DialogWindow = () => {
   );
 
   return (
-    <StyledDialogWindow activeChat={!!activeChat}>
-      {activeChat ? (
+    <StyledDialogWindow activeChat={!!chatId}>
+      {chatId ? (
         <StyledDialog>
           <StyledHeader>
-            <Card active title={activeChat} />
+            <Card active title={phone} />
           </StyledHeader>
           <StyLedBody>{!!messages.length && renderMessage}</StyLedBody>
           <StyledFooter>

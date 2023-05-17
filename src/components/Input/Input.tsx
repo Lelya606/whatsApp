@@ -50,4 +50,8 @@ export const StyledInput = styled.input`
     font-size: 1rem;
     color: ${({ theme }) => theme.colors.SHUTTLE_GRAY};
   }
+
+  ::-webkit-inner-spin-button {
+    appearance: none;
+  }
 `;

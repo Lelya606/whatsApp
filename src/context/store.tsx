@@ -18,14 +18,19 @@ export interface IMessage {
   incoming: boolean;
 }
 
+export interface IChat {
+  chatId: string;
+  phone: string;
+}
+
 export interface IStoreContextValue {
   chatsData: {
-    chats: string[];
-    setChats: Dispatch<SetStateAction<string[]>> | null;
+    chats: IChat[];
+    setChats: Dispatch<SetStateAction<IChat[]>> | null;
   };
   activeChatData: {
-    activeChat: string;
-    setActiveChat: Dispatch<SetStateAction<string>> | null;
+    activeChat: IChat;
+    setActiveChat: Dispatch<SetStateAction<IChat>> | null;
   };
   messagesData: {
     messages: IMessage[];
@@ -39,7 +44,10 @@ const defaultValue = {
     setChats: null,
   },
   activeChatData: {
-    activeChat: '',
+    activeChat: {
+      chatId: '',
+      phone: '',
+    },
     setActiveChat: null,
   },
   messagesData: {
@@ -51,8 +59,10 @@ const defaultValue = {
 const StoreContext = createContext<IStoreContextValue>(defaultValue);
 
 export const StoreManager = ({ children }: IStoreManagerProps) => {
-  const [chats, setChats] = useState<string[]>([]);
-  const [activeChat, setActiveChat] = useState<string>('');
+  const [chats, setChats] = useState<IChat[]>([]);
+  const [activeChat, setActiveChat] = useState<IChat>(
+    defaultValue.activeChatData.activeChat,
+  );
   const [messages, setMessages] = useState<IMessage[]>([]);
   const state = [
     chats,

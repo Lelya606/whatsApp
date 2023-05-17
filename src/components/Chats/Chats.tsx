@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { Input } from 'components/Input/Input';
 import { Card } from 'components/Сard/Card';
 import { ReactComponent as Plus } from 'assets/icons/plus.svg';
-import { useStoreContextManager } from 'context/store';
+import { IChat, useStoreContextManager } from 'context/store';
+import { chekPhoneNumber } from 'services/messagesService';
 
 export const Chats = () => {
   const { chatsData, activeChatData } = useStoreContextManager();
@@ -11,33 +12,50 @@ export const Chats = () => {
   const { activeChat, setActiveChat } = activeChatData;
   const [inputValue, setInputValue] = useState('');
 
-  const onChangeInput = (event: ChangeEvent<HTMLInputElement>) =>
+  const onChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.currentTarget.value);
+  };
 
-  const onClickInput = () => {
-    setChats && inputValue && setChats(prev => [...prev, inputValue]);
+  const onClickInput = async () => {
+    if (inputValue.length < 11 || inputValue.length > 13) {
+      alert('Проверьте введенный номер');
+      return;
+    }
+    const { existsWhatsapp } = await chekPhoneNumber(
+      inputValue,
+      '1101821608',
+      '33432273d00747c2a6d7e9ddfe8120f318d53946bb7a48e7a6',
+    );
+    if (!existsWhatsapp) {
+      alert(`${inputValue} пока не использует WhatsApp`);
+      return;
+    }
+    const data = {
+      phone: `+${inputValue}`,
+      chatId: `${inputValue}@c.us`,
+    };
+    setChats && inputValue && setChats(prev => [...prev, data]);
     setInputValue('');
   };
 
   const onClickCard = useCallback(
-    (title: string) => {
-      setActiveChat && setActiveChat(title);
+    (data: IChat) => {
+      setActiveChat && setActiveChat(data);
     },
     [chats],
   );
 
   const renderCards = useMemo(
     () =>
-      chats.map(title => (
-        <>
+      chats.map(({ phone, chatId }) => (
+        <div key={chatId}>
           <Card
-            active={activeChat === title}
-            title={title}
-            onClick={onClickCard}
-            key={title}
+            active={activeChat.phone === phone}
+            title={phone}
+            onClick={title => onClickCard({ phone: title, chatId })}
           />
-          <StyledSeparator key={`${title}1`} />
-        </>
+          <StyledSeparator />
+        </div>
       )),
     [chats, activeChat],
   );
@@ -46,7 +64,7 @@ export const Chats = () => {
     <StyledChats>
       <StyledChatsHeader>
         <Input
-          type="text"
+          type="number"
           placeholder="Новый чат"
           onChange={onChangeInput}
           onKeyDown={onClickInput}
