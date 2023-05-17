@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as Logo } from 'assets/icons/logo.svg';
 import { ReactComponent as Send } from 'assets/icons/send.svg';
@@ -11,7 +11,7 @@ import { changeFormatDate } from 'utils/common';
 export const DialogWindow = () => {
   const { activeChatData, messagesData } = useStoreContextManager();
   const { activeChat } = activeChatData;
-  const { setMessages } = messagesData;
+  const { messages, setMessages } = messagesData;
   const [inputValue, setValueInput] = useState('');
 
   const onChangeInput = (event: ChangeEvent<HTMLInputElement>) =>
@@ -21,10 +21,21 @@ export const DialogWindow = () => {
     const message = {
       message: inputValue,
       date: changeFormatDate(new Date()),
+      incoming: true,
     };
     setMessages && inputValue && setMessages(prev => [...prev, message]);
     setValueInput('');
   };
+
+  const renderMessage = useMemo(
+    () =>
+      messages.map(({ message, incoming }) => (
+        <StyledMessageContainer>
+          <StyledMessage incoming={incoming}>{message}</StyledMessage>
+        </StyledMessageContainer>
+      )),
+    [messages],
+  );
 
   return (
     <StyledDialogWindow activeChat={!!activeChat}>
@@ -33,7 +44,7 @@ export const DialogWindow = () => {
           <StyledHeader>
             <Card active title={activeChat} />
           </StyledHeader>
-          <StyLedBody />
+          <StyLedBody>{!!messages.length && renderMessage}</StyLedBody>
           <StyledFooter>
             <Input
               type="text"
@@ -100,6 +111,10 @@ const StyledHeader = styled.div`
 `;
 
 const StyLedBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  padding: 0 3.9375rem 1.25rem 3.9375rem;
   height: 100%;
   background-color: ${({ theme }) => theme.colors.BLACK_HAZE};
 `;
@@ -118,4 +133,18 @@ const StyledFooter = styled.div`
   svg {
     margin-top: 0.5rem;
   }
+`;
+
+const StyledMessageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledMessage = styled.div<{ incoming: boolean }>`
+  padding: 0.5rem;
+  align-self: ${({ incoming }) => (incoming ? 'flex-end;' : 'flex-start;')});
+  background-color: ${({ theme, incoming }) =>
+    incoming ? theme.colors.SNOW_FLURRY : theme.colors.WHITE};
+  box-shadow: ${({ theme }) => theme.boxShadow.message};
+  border-radius: 0.4688rem;
 `;

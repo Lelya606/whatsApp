@@ -15,6 +15,7 @@ export interface IStoreManagerProps {
 export interface IMessage {
   date: string;
   message: string;
+  incoming: boolean;
 }
 
 export interface IStoreContextValue {

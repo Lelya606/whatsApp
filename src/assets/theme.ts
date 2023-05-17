@@ -20,10 +20,12 @@ export const defaultTheme: Theme = {
     RIVER_BED: '#41525D',
     LIMITED_SPRUCE: '#3B4A5433',
     BUNKER: '#111B21',
+    SNOW_FLURRY: '#D9FDD3',
     PERSIAN_GREEN: '#00A884',
   },
   boxShadow: {
     block: '0 6px 18px rgba(11, 20, 26, 0.05)',
-    light: '0 2px 3px rgba(11,20,26,0.08)',
+    light: '0 2px 3px rgba(11, 20, 26, 0.08)',
+    message: '0 1px 0.5px rgba(11, 20, 26, 0.13)',
   },
 };
