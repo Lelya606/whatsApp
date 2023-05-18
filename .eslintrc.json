@@ -86,6 +86,7 @@
         "arrow-parens": "off",
         "no-extra-boolean-cast": "off",
         "no-return-await": "off",
-        "@typescript-eslint/return-await": "off"
+        "@typescript-eslint/return-await": "off",
+        "consistent-return": "off"
     }
 }

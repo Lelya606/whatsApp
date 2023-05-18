@@ -16,7 +16,7 @@ export const changeFormatDate = (date: Date) =>
     })
     .join('.');
 
-const changeTime = (date: Date) => {
+export const changeTime = (date: Date) => {
   const [time, timeDay] = date.toLocaleTimeString().split(' ');
   const [hour, min] = time.split(':');
   return `${hour}:${min} ${timeDay}`;

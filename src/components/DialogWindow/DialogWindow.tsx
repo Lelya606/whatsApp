@@ -10,11 +10,12 @@ import { Input, StyledInput } from 'components/Input/Input';
 import { StyledIconWrapper } from 'components/Chats/Chats';
 import { sendMessage } from 'services/messagesService';
 import { STATUS_MESSAGE } from 'constants/common';
+import { changeFormatDate, changeTime } from 'utils/common';
 
-const { READ, DEL } = STATUS_MESSAGE;
+const { READ, DEL, PEN } = STATUS_MESSAGE;
 
 export const DialogWindow = () => {
-  const { activeChat, messages, auth } = useStoreContextManager();
+  const { activeChat, messages, auth, setMessages } = useStoreContextManager();
   const { chatId, phone } = activeChat;
   const [inputValue, setValueInput] = useState('');
 
@@ -22,10 +23,6 @@ export const DialogWindow = () => {
     setValueInput(event.currentTarget.value);
 
   const onClickSend = async () => {
-    const message = {
-      message: inputValue,
-      incoming: true,
-    };
     const data = {
       data: {
         chatId,
@@ -34,8 +31,14 @@ export const DialogWindow = () => {
       ...auth,
     };
     const { idMessage } = await sendMessage(data);
-    console.log(idMessage, message);
-    // setMessages && inputValue && setMessages(prev => [...prev, message]);
+    const message = {
+      idMessage,
+      statusMessage: PEN,
+      textMessage: inputValue,
+      date: changeFormatDate(new Date()),
+      time: changeTime(new Date()),
+    };
+    setMessages && setMessages(prev => [message, ...prev]);
     setValueInput('');
   };
 

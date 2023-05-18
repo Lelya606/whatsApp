@@ -3,6 +3,9 @@ import { useStoreContextManager } from 'context/store';
 import { chekPhoneNumber, getChants, getMessages } from 'services/chatsService';
 import { changeDataChats, changeMessages } from 'utils/common';
 import { IChat } from 'context/types';
+import { CHAT_ID, ERROR_MESSAGE } from 'constants/common';
+
+const { CHECK, UNUSED } = ERROR_MESSAGE;
 
 export const useChats = () => {
   const {
@@ -16,6 +19,11 @@ export const useChats = () => {
   } = useStoreContextManager();
   const { idInstance, apiTokenInstance } = auth;
   const [inputValue, setInputValue] = useState('');
+  const [stateChats, setStateChats] = useState<IChat[]>([]);
+
+  useEffect(() => {
+    !stateChats?.length && setStateChats(chats);
+  }, [chats]);
 
   useEffect(() => {
     setAuth &&
@@ -36,27 +44,35 @@ export const useChats = () => {
   }, [auth]);
 
   const onChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.currentTarget.value);
+    const { value } = event.currentTarget;
+    setInputValue(value);
+    if (chats && value.length >= 3) {
+      const newChats = chats.filter(({ phone }) => phone.includes(value));
+      setChats && setChats(newChats);
+    }
+    if (chats && value.length === 0) {
+      setChats && stateChats && setChats(stateChats);
+    }
   };
 
   const onClickInput = async () => {
     if (inputValue.length < 11 || inputValue.length > 13) {
-      alert('Проверьте введенный номер');
-      return;
+      return alert(CHECK);
     }
+    if (chats.length === 1) return;
     const { existsWhatsapp } = await chekPhoneNumber({
       phoneNumber: inputValue,
       ...auth,
     });
     if (!existsWhatsapp) {
-      alert(`${inputValue} пока не использует WhatsApp`);
-      return;
+      return alert(`${inputValue} ${UNUSED}`);
     }
     const data = {
       phone: `+${inputValue}`,
-      chatId: `${inputValue}@c.us`,
+      chatId: `${inputValue}${CHAT_ID}`,
     };
-    setChats && inputValue && setChats(prev => [...prev, data]);
+
+    setChats && inputValue && setChats([data, ...stateChats]);
     setInputValue('');
   };
 
@@ -64,6 +80,7 @@ export const useChats = () => {
     async (data: IChat) => {
       setMessages && setMessages([]);
       const messages = await getMessages({ chatId: data.chatId, ...auth });
+      if (!messages) return;
       const messagesInfo = changeMessages(messages);
       setMessages && setMessages(messagesInfo);
       setActiveChat && setActiveChat(data);

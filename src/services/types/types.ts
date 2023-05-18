@@ -19,8 +19,3 @@ export interface IMessages extends IAuth {
 export interface IPone extends IAuth {
   phoneNumber: string;
 }
-
-export interface IGetMessage {
-  chatId: string;
-  idMessage: string;
-}
