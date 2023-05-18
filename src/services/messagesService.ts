@@ -1,31 +1,27 @@
-import apiService from './apiService';
+import apiService from 'services/apiService';
+import { IGetMessage, IPostMessage } from 'services/types/types';
 
 export const messagesApi = {
-  chekPhone: (
-    phoneNumber: string,
+  post: ({ data, idInstance, apiTokenInstance }: IPostMessage) =>
+    apiService.post(
+      `waInstance${idInstance}/sendMessage/${apiTokenInstance}`,
+      data,
+    ),
+  getMessage: (
+    data: IGetMessage,
     idInstance: string,
     apiTokenInstance: string,
   ) =>
     apiService.post(
-      `waInstance${idInstance}/CheckWhatsapp/${apiTokenInstance}`,
-      {
-        phoneNumber,
-      },
+      `waInstance${idInstance}/getMessage/${apiTokenInstance}`,
+      data,
     ),
 };
 
-export const chekPhoneNumber = async (
-  phone: string,
-  idInstance: string,
-  apiTokenInstance: string,
-) => {
+export const sendMessage = async (data: IPostMessage) => {
   try {
-    const { data } = await messagesApi.chekPhone(
-      phone,
-      idInstance,
-      apiTokenInstance,
-    );
-    return data;
+    const response = await messagesApi.post(data);
+    return response.data;
   } catch (err) {
     return err;
   }

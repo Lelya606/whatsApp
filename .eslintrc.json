@@ -84,6 +84,8 @@
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-use-before-define": "off",
         "arrow-parens": "off",
-        "no-extra-boolean-cast": "off"
+        "no-extra-boolean-cast": "off",
+        "no-return-await": "off",
+        "@typescript-eslint/return-await": "off"
     }
 }

@@ -19,8 +19,10 @@ export const defaultTheme: Theme = {
     SHUTTLE_GRAY: '#54656F',
     RIVER_BED: '#41525D',
     LIMITED_SPRUCE: '#3B4A5433',
+    AZTEC: '#0B141A33',
     BUNKER: '#111B21',
     SNOW_FLURRY: '#D9FDD3',
+    PICTON_BLUE: '#53BDEB',
     PERSIAN_GREEN: '#00A884',
   },
   boxShadow: {

@@ -2,37 +2,63 @@ import React, { ChangeEvent, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as Logo } from 'assets/icons/logo.svg';
 import { ReactComponent as Send } from 'assets/icons/send.svg';
+import { ReactComponent as Check } from 'assets/icons/check.svg';
+import { ReactComponent as CheckOne } from 'assets/icons/checkOne.svg';
 import { useStoreContextManager } from 'context/store';
 import { Card, StyledCard } from 'components/Сard/Card';
 import { Input, StyledInput } from 'components/Input/Input';
 import { StyledIconWrapper } from 'components/Chats/Chats';
-import { changeFormatDate } from 'utils/common';
+import { sendMessage } from 'services/messagesService';
+import { STATUS_MESSAGE } from 'constants/common';
+
+const { READ, DEL } = STATUS_MESSAGE;
 
 export const DialogWindow = () => {
-  const { activeChatData, messagesData } = useStoreContextManager();
-  const { activeChat } = activeChatData;
+  const { activeChat, messages, auth } = useStoreContextManager();
   const { chatId, phone } = activeChat;
-  const { messages, setMessages } = messagesData;
   const [inputValue, setValueInput] = useState('');
 
   const onChangeInput = (event: ChangeEvent<HTMLInputElement>) =>
     setValueInput(event.currentTarget.value);
 
-  const onClickSend = () => {
+  const onClickSend = async () => {
     const message = {
       message: inputValue,
-      date: changeFormatDate(new Date()),
       incoming: true,
     };
-    setMessages && inputValue && setMessages(prev => [...prev, message]);
+    const data = {
+      data: {
+        chatId,
+        message: inputValue,
+      },
+      ...auth,
+    };
+    const { idMessage } = await sendMessage(data);
+    console.log(idMessage, message);
+    // setMessages && inputValue && setMessages(prev => [...prev, message]);
     setValueInput('');
   };
 
   const renderMessage = useMemo(
     () =>
-      messages.map(({ message, incoming }) => (
-        <StyledMessageContainer key={message}>
-          <StyledMessage incoming={incoming}>{message}</StyledMessage>
+      messages.map(({ idMessage, statusMessage, textMessage, date, time }) => (
+        <StyledMessageContainer key={idMessage ?? textMessage}>
+          <StyledMessage incoming={!!statusMessage}>
+            {textMessage}
+            {statusMessage && (
+              <StyledIconMessage statusMessage={statusMessage}>
+                {statusMessage === DEL || statusMessage === READ ? (
+                  <Check />
+                ) : (
+                  <CheckOne />
+                )}
+              </StyledIconMessage>
+            )}
+          </StyledMessage>
+          <StyledDateWrapper>
+            <StyledDate>{date}</StyledDate>
+            <StyledTime>{time}</StyledTime>
+          </StyledDateWrapper>
         </StyledMessageContainer>
       )),
     [messages],
@@ -45,7 +71,9 @@ export const DialogWindow = () => {
           <StyledHeader>
             <Card active title={phone} />
           </StyledHeader>
-          <StyLedBody>{!!messages.length && renderMessage}</StyLedBody>
+          <StyLedBodyWrapper>
+            <StyLedBody>{!!messages.length && renderMessage}</StyLedBody>
+          </StyLedBodyWrapper>
           <StyledFooter>
             <Input
               type="text"
@@ -111,13 +139,33 @@ const StyledHeader = styled.div`
   }
 `;
 
+const StyLedBodyWrapper = styled.div`
+  display: flex;
+  flex-direction: column-reverse;
+  overflow: auto;
+  height: calc(100vh - 10.375rem);
+  background-color: ${({ theme }) => theme.colors.BLACK_HAZE};
+
+  ::-webkit-scrollbar {
+    width: 0.375rem;
+    height: 0.375rem;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.colors.AZTEC};
+  }
+  ::-webkit-scrollbar-track {
+    background: ${({ theme }) => theme.colors.WHITE};
+    opacity: 0.1%;
+  }
+`;
+
 const StyLedBody = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: end;
-  padding: 0 3.9375rem 1.25rem 3.9375rem;
-  height: 100%;
-  background-color: ${({ theme }) => theme.colors.BLACK_HAZE};
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  row-gap: 0.5rem;
+  padding: 0 1.5rem 1.25rem;
 `;
 
 const StyledFooter = styled.div`
@@ -138,7 +186,8 @@ const StyledFooter = styled.div`
 
 const StyledMessageContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: end;
+  column-gap: 1rem;
 `;
 
 const StyledMessage = styled.div<{ incoming: boolean }>`
@@ -148,4 +197,28 @@ const StyledMessage = styled.div<{ incoming: boolean }>`
     incoming ? theme.colors.SNOW_FLURRY : theme.colors.WHITE};
   box-shadow: ${({ theme }) => theme.boxShadow.message};
   border-radius: 0.4688rem;
+  color: ${({ theme }) => theme.colors.BUNKER};
 `;
+
+const StyledIconMessage = styled.span<{ statusMessage: string }>`
+  margin-left: 0.5rem;
+  svg {
+    fill: ${({ theme, statusMessage }) =>
+      statusMessage === READ
+        ? theme.colors.PICTON_BLUE
+        : theme.colors.SHUTTLE_GRAY};
+  }
+`;
+
+const StyledDateWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.01rem;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7rem;
+  color: ${({ theme }) => theme.colors.SHUTTLE_GRAY};
+`;
+
+const StyledDate = styled.p``;
+const StyledTime = styled.p``;

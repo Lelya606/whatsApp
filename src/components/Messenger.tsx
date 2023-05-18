@@ -16,8 +16,8 @@ export const Messenger = () => (
 const StyledMessenger = styled.div`
   display: grid;
   grid-template-columns: 0.5fr 1fr;
-  width: calc(100vw - 38px);
-  height: calc(100vh - 38px);
+  width: calc(100vw - 2.375rem);
+  height: calc(100vh - 2.375rem);
   max-width: 1600px;
   box-shadow: ${({ theme }) => theme.boxShadow.block};
 `;

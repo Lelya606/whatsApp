@@ -5,6 +5,7 @@
       "@/*": ["src/*"],
       "@/components": ["components/*"],
       "@/context": ["context/*"],
+      "@/constants": ["constants/*"],
       "@/assets": ["assets/*"],
       "@/types": ["types/*"],
       "@/utils": ["utils/*"],

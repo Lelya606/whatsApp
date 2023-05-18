@@ -1,49 +1,19 @@
-import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { Input } from 'components/Input/Input';
 import { Card } from 'components/Сard/Card';
 import { ReactComponent as Plus } from 'assets/icons/plus.svg';
-import { IChat, useStoreContextManager } from 'context/store';
-import { chekPhoneNumber } from 'services/messagesService';
+import { useChats } from 'components/Chats/useChats';
 
 export const Chats = () => {
-  const { chatsData, activeChatData } = useStoreContextManager();
-  const { chats, setChats } = chatsData;
-  const { activeChat, setActiveChat } = activeChatData;
-  const [inputValue, setInputValue] = useState('');
-
-  const onChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.currentTarget.value);
-  };
-
-  const onClickInput = async () => {
-    if (inputValue.length < 11 || inputValue.length > 13) {
-      alert('Проверьте введенный номер');
-      return;
-    }
-    const { existsWhatsapp } = await chekPhoneNumber(
-      inputValue,
-      '1101821608',
-      '33432273d00747c2a6d7e9ddfe8120f318d53946bb7a48e7a6',
-    );
-    if (!existsWhatsapp) {
-      alert(`${inputValue} пока не использует WhatsApp`);
-      return;
-    }
-    const data = {
-      phone: `+${inputValue}`,
-      chatId: `${inputValue}@c.us`,
-    };
-    setChats && inputValue && setChats(prev => [...prev, data]);
-    setInputValue('');
-  };
-
-  const onClickCard = useCallback(
-    (data: IChat) => {
-      setActiveChat && setActiveChat(data);
-    },
-    [chats],
-  );
+  const {
+    chats,
+    inputValue,
+    activeChat,
+    onChangeInput,
+    onClickInput,
+    onClickCard,
+  } = useChats();
 
   const renderCards = useMemo(
     () =>
@@ -106,6 +76,21 @@ export const StyledIconWrapper = styled.span`
 
 const StyledChatsBody = styled.div`
   position: relative;
+  overflow: auto;
+  height: calc(100vh - 6.625rem);
+
+  ::-webkit-scrollbar {
+    width: 0.375rem;
+    height: 0.375rem;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.colors.AZTEC};
+  }
+  ::-webkit-scrollbar-track {
+    background: ${({ theme }) => theme.colors.WHITE};
+    opacity: 0.1%;
+  }
 `;
 
 export const StyledChatsHeader = styled.div`
