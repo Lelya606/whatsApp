@@ -16,7 +16,6 @@ export const useChats = () => {
     activeChat,
     setActiveChat,
     auth,
-    setAuth,
     messages,
     setMessages,
   } = useStoreContextManager();
@@ -48,14 +47,12 @@ export const useChats = () => {
     idMessage: string,
     statusMessage: string,
   ) => {
-    console.log(data);
     const messageInfo = messages.map(message => {
       if (message.idMessage === idMessage) {
         return { ...message, statusMessage };
       }
       return message;
     });
-    console.log(messageInfo);
     setMessages && setMessages(messageInfo);
   };
 
@@ -77,14 +74,6 @@ export const useChats = () => {
   useEffect(() => {
     !stateChats?.length && setStateChats(chats);
   }, [chats]);
-
-  useEffect(() => {
-    setAuth &&
-      setAuth({
-        idInstance: '1101821608',
-        apiTokenInstance: '33432273d00747c2a6d7e9ddfe8120f318d53946bb7a48e7a6',
-      });
-  }, []);
 
   useEffect(() => {
     if (!idInstance || !apiTokenInstance) return;

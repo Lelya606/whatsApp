@@ -87,6 +87,7 @@
         "no-extra-boolean-cast": "off",
         "no-return-await": "off",
         "@typescript-eslint/return-await": "off",
-        "consistent-return": "off"
+        "consistent-return": "off",
+        "import/no-extraneous-dependencies": "off"
     }
 }
