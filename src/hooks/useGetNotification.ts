@@ -18,11 +18,12 @@ export const useGetNotification = () => {
   const [newMessage, setNewMessage] = useState<INewMessage | null>(null);
 
   const changeMessages = (
-    { textMessage }: { textMessage?: string },
+    dataMessage: { textMessage?: string },
     idMessage: string,
     timestamp: number,
     chatId: string,
   ) => {
+    const { textMessage } = dataMessage;
     const message = textMessage ?? 'неизвестный формат сообщения';
     const date = new Date(timestamp * 1000);
     const statusMessage = chatId === activeChat.chatId ? READ : undefined;
@@ -37,8 +38,9 @@ export const useGetNotification = () => {
 
   const changeDataChats = (
     chatId: string,
-    { textMessage }: { textMessage?: string },
+    dataMessage: { textMessage?: string },
   ) => {
+    const { textMessage } = dataMessage;
     const message = textMessage ?? 'неизвестный формат сообщения';
     const [phone] = chatId.split('@');
     return {
