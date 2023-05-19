@@ -17,16 +17,20 @@ export const Chats = () => {
 
   const renderCards = useMemo(
     () =>
-      chats.map(({ phone, chatId }) => (
-        <div key={chatId}>
-          <Card
-            active={activeChat.phone === phone}
-            title={phone}
-            onClick={title => onClickCard({ phone: title, chatId })}
-          />
-          <StyledSeparator />
-        </div>
-      )),
+      chats.map(
+        ({ phone, chatId, text }) =>
+          phone && (
+            <div key={chatId}>
+              <Card
+                active={activeChat.phone === phone}
+                title={phone}
+                onClick={title => onClickCard({ phone: title, chatId })}
+                text={text}
+              />
+              <StyledSeparator />
+            </div>
+          ),
+      ),
     [chats, activeChat],
   );
 
@@ -35,7 +39,7 @@ export const Chats = () => {
       <StyledChatsHeader>
         <Input
           type="number"
-          placeholder="Новый чат"
+          placeholder="Поиск и новый чат"
           onChange={onChangeInput}
           onKeyDown={onClickInput}
           value={inputValue}

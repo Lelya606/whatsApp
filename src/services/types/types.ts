@@ -12,6 +12,10 @@ export interface IPostMessage extends IAuth {
   data: IMessage;
 }
 
+export interface IDeleteMessage extends IAuth {
+  receiptId: string;
+}
+
 export interface IMessages extends IAuth {
   chatId: string;
 }

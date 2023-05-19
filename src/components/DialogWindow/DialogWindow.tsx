@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useMemo, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { ReactComponent as Logo } from 'assets/icons/logo.svg';
 import { ReactComponent as Send } from 'assets/icons/send.svg';
 import { ReactComponent as Check } from 'assets/icons/check.svg';
@@ -23,6 +23,7 @@ export const DialogWindow = () => {
     setValueInput(event.currentTarget.value);
 
   const onClickSend = async () => {
+    if (!chatId) return;
     const data = {
       data: {
         chatId,
@@ -45,8 +46,11 @@ export const DialogWindow = () => {
   const renderMessage = useMemo(
     () =>
       messages.map(({ idMessage, statusMessage, textMessage, date, time }) => (
-        <StyledMessageContainer key={idMessage ?? textMessage}>
-          <StyledMessage incoming={!!statusMessage}>
+        <StyledMessageContainer
+          key={idMessage ?? textMessage}
+          incoming={!!statusMessage}
+        >
+          <StyledMessage>
             {textMessage}
             {statusMessage && (
               <StyledIconMessage statusMessage={statusMessage}>
@@ -71,9 +75,7 @@ export const DialogWindow = () => {
     <StyledDialogWindow activeChat={!!chatId}>
       {chatId ? (
         <StyledDialog>
-          <StyledHeader>
-            <Card active title={phone} />
-          </StyledHeader>
+          <StyledHeader>{phone && <Card active title={phone} />}</StyledHeader>
           <StyLedBodyWrapper>
             <StyLedBody>{!!messages.length && renderMessage}</StyLedBody>
           </StyLedBodyWrapper>
@@ -187,20 +189,28 @@ const StyledFooter = styled.div`
   }
 `;
 
-const StyledMessageContainer = styled.div`
-  display: flex;
-  justify-content: end;
-  column-gap: 1rem;
+const StyledReverse = css`
+  justify-content: start;
+  flex-direction: row-reverse;
 `;
 
-const StyledMessage = styled.div<{ incoming: boolean }>`
+const StyledMessage = styled.div`
   padding: 0.5rem;
-  align-self: ${({ incoming }) => (incoming ? 'flex-end;' : 'flex-start;')});
-  background-color: ${({ theme, incoming }) =>
-    incoming ? theme.colors.SNOW_FLURRY : theme.colors.WHITE};
   box-shadow: ${({ theme }) => theme.boxShadow.message};
   border-radius: 0.4688rem;
   color: ${({ theme }) => theme.colors.BUNKER};
+`;
+
+const StyledMessageContainer = styled.div<{ incoming: boolean }>`
+  display: flex;
+  justify-content: end;
+  column-gap: 1rem;
+  ${({ incoming }) => !incoming && StyledReverse};
+
+  ${StyledMessage} {
+    background-color: ${({ theme, incoming }) =>
+      incoming ? theme.colors.SNOW_FLURRY : theme.colors.WHITE};
+  }
 `;
 
 const StyledIconMessage = styled.span<{ statusMessage: string }>`

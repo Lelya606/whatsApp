@@ -22,7 +22,7 @@ export const Card = ({
   };
 
   return (
-    <StyledCard active={active} onClick={onClickCard}>
+    <StyledCard active={active || !!text} onClick={onClickCard}>
       <StyledPhoto>
         <Photo />
       </StyledPhoto>

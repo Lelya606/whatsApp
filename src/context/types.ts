@@ -8,14 +8,15 @@ export interface IStoreManagerProps {
 export interface IMessage {
   idMessage?: string;
   statusMessage?: string;
-  textMessage: string;
-  date: string;
-  time: string;
+  textMessage?: string;
+  date?: string;
+  time?: string;
 }
 
 export interface IChat {
-  chatId: string;
-  phone: string;
+  chatId?: string;
+  phone?: string;
+  text?: string;
   messagesInfo?: IMessage[];
 }
 
