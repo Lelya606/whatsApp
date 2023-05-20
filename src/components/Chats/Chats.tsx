@@ -1,9 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { Input } from 'components/Input/Input';
 import { Card } from 'components/Сard/Card';
 import { ReactComponent as Plus } from 'assets/icons/plus.svg';
 import { useChats } from 'components/Chats/useChats';
+import { useGetNotification } from 'hooks/useGetNotification';
+import { deleteMessage } from 'services/messagesService';
 
 export const Chats = () => {
   const {
@@ -13,12 +15,34 @@ export const Chats = () => {
     onChangeInput,
     onClickInput,
     onClickCard,
+    auth,
+    changeMessageActiveChat,
+    addMessageActiveChat,
+    setDataChats,
   } = useChats();
+
+  const newMessage = useGetNotification();
+
+  useEffect(() => {
+    if (!newMessage) return;
+    const { data, receiptId } = newMessage;
+    if (data) {
+      const { phone, statusMessage, textMessage, idMessage, chatId } = data;
+      if (phone && chatId) setDataChats(data, chatId);
+      if (textMessage) addMessageActiveChat(data);
+      if (statusMessage && idMessage) {
+        changeMessageActiveChat(data, idMessage, statusMessage);
+      }
+    }
+
+    deleteMessage({ receiptId, ...auth });
+  }, [newMessage]);
 
   const renderCards = useMemo(
     () =>
       chats.map(
         ({ phone, chatId, text }) =>
+          chatId &&
           phone && (
             <div key={chatId}>
               <Card
@@ -31,7 +55,7 @@ export const Chats = () => {
             </div>
           ),
       ),
-    [chats, activeChat],
+    [chats],
   );
 
   return (

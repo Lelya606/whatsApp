@@ -5,7 +5,6 @@ import {
   IStoreContextValue,
   IStoreManagerProps,
 } from 'context/types';
-import { IAuth } from 'services/types/types';
 
 const defaultValue = {
   chats: [],
@@ -17,30 +16,14 @@ const defaultValue = {
   setActiveChat: null,
   messages: [],
   setMessages: null,
-  auth: {
-    apiTokenInstance: '',
-    idInstance: '',
-  },
-  setAuth: null,
 };
 
-const StoreContext = createContext<IStoreContextValue>(defaultValue);
+export const StoreContext = createContext<IStoreContextValue>(defaultValue);
 
 export const StoreManager = ({ children }: IStoreManagerProps) => {
   const [chats, setChats] = useState<IChat[]>([]);
   const [activeChat, setActiveChat] = useState<IChat>(defaultValue.activeChat);
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [auth, setAuth] = useState<IAuth>(defaultValue.auth);
-  const state = [
-    chats,
-    activeChat,
-    setChats,
-    setActiveChat,
-    messages,
-    setMessages,
-    auth,
-    setAuth,
-  ];
 
   const store: IStoreContextValue = useMemo(
     () => ({
@@ -50,10 +33,8 @@ export const StoreManager = ({ children }: IStoreManagerProps) => {
       setActiveChat,
       messages,
       setMessages,
-      auth,
-      setAuth,
     }),
-    state,
+    [chats, setChats, activeChat, setActiveChat, messages, setMessages],
   );
 
   return (

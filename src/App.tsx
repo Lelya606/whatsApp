@@ -1,50 +1,37 @@
-import React, { useEffect, useMemo } from 'react';
-import { createGlobalStyle, ThemeProps } from 'styled-components';
-import { Theme } from 'assets/theme';
+import React, { useEffect } from 'react';
+import { useNavigate, useRoutes } from 'react-router-dom';
 import { Messenger } from 'components/Messenger';
-import { useStoreContextManager } from 'context/store';
-import { Login } from './components/Login';
+import { Login } from 'components/Login';
+import { getLocalStorage } from 'services/storageService';
+import { AUTH, ROUTS } from 'constants/common';
+import { useAuth } from 'context/auth';
+
+const { LOGIN, MESSAGE } = ROUTS;
+const { API_TOKEN_INSTANCE, ID_INSTANCE } = AUTH;
 
 export const App = () => {
-  const { setAuth, auth } = useStoreContextManager();
-  const { idInstance, apiTokenInstance } = auth;
+  const navigate = useNavigate();
+  const { setAuth } = useAuth();
+  const routes = useRoutes([
+    { path: MESSAGE, element: <Messenger /> },
+    { path: LOGIN, element: <Login /> },
+  ]);
 
   useEffect(() => {
-    console.log(setAuth);
-    setAuth &&
-      setAuth({
-        idInstance: '1101821608',
-        apiTokenInstance: '33432273d00747c2a6d7e9ddfe8120f318d53946bb7a48e7a6',
-      });
+    const id = getLocalStorage(ID_INSTANCE);
+    const apiToken = getLocalStorage(API_TOKEN_INSTANCE);
+
+    if (id && apiToken) {
+      setAuth &&
+        setAuth({
+          idInstance: id,
+          apiTokenInstance: apiToken,
+        });
+      return navigate(MESSAGE);
+    }
+
+    return navigate(LOGIN);
   }, []);
 
-  const renderPage = useMemo(() => {
-    console.log(idInstance && apiTokenInstance);
-    return idInstance && apiTokenInstance ? <Messenger /> : <Login />;
-  }, []);
-
-  return (
-    <>
-      <GlobalStyle />
-      {renderPage}
-    </>
-  );
+  return routes;
 };
-
-const GlobalStyle = createGlobalStyle<ThemeProps<Theme>>`
-  @font-face {
-    font-family: 'Segoe';
-    src: url('https://fonts.cdnfonts.com/css/segoe-ui-4');
-  }
-  
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Segoe UI, Arial,sans-serif;
-  }
-  
-  body {
-    background: ${({ theme }) => theme.colors.PAMPAS}
-  }
-`;

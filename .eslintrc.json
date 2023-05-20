@@ -88,6 +88,7 @@
         "no-return-await": "off",
         "@typescript-eslint/return-await": "off",
         "consistent-return": "off",
-        "import/no-extraneous-dependencies": "off"
+        "import/no-extraneous-dependencies": "off",
+        "linebreak-style": "off"
     }
 }

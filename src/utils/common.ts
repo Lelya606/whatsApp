@@ -17,18 +17,20 @@ export const changeFormatDate = (date: Date) =>
     .join('.');
 
 export const changeTime = (date: Date) => {
-  const [time, timeDay] = date.toLocaleTimeString().split(' ');
+  const time = date.toLocaleTimeString();
   const [hour, min] = time.split(':');
-  return `${hour}:${min} ${timeDay}`;
+  return `${hour}:${min}` ?? '';
 };
 
 export const changeDataChats = (data: { id: string }[]) =>
+  data &&
   data.map(({ id }) => {
     const [phone] = id.split('@');
     return { chatId: id, phone: `+${phone}` };
   });
 
 export const changeMessages = (data: IMessageData[]) =>
+  data &&
   data.map(({ idMessage, statusMessage, textMessage, timestamp }) => {
     const newDate = new Date(timestamp * 1000);
     const date = changeFormatDate(newDate);

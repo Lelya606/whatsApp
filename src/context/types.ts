@@ -27,6 +27,9 @@ export interface IStoreContextValue {
   setActiveChat: Dispatch<SetStateAction<IChat>> | null;
   messages: IMessage[];
   setMessages: Dispatch<SetStateAction<IMessage[]>> | null;
+}
+
+export interface IAuthContextValue {
   auth: IAuth;
   setAuth: Dispatch<SetStateAction<IAuth>> | null;
 }

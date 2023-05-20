@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { ReactComponent as Logo } from 'assets/icons/logo.svg';
 import { ReactComponent as Send } from 'assets/icons/send.svg';
@@ -11,16 +11,17 @@ import { StyledIconWrapper } from 'components/Chats/Chats';
 import { sendMessage } from 'services/messagesService';
 import { STATUS_MESSAGE } from 'constants/common';
 import { changeFormatDate, changeTime } from 'utils/common';
+import { useAuth } from 'context/auth';
 
 const { READ, DEL, PEN } = STATUS_MESSAGE;
 
 export const DialogWindow = () => {
-  const { activeChat, messages, auth, setMessages } = useStoreContextManager();
+  const { activeChat, messages, setMessages } = useStoreContextManager();
+  const { auth } = useAuth();
   const { chatId, phone } = activeChat;
   const [inputValue, setValueInput] = useState('');
 
-  const onChangeInput = (event: ChangeEvent<HTMLInputElement>) =>
-    setValueInput(event.currentTarget.value);
+  const onChangeInput = (value: string) => setValueInput(value);
 
   const onClickSend = async () => {
     if (!chatId) return;
@@ -45,30 +46,30 @@ export const DialogWindow = () => {
 
   const renderMessage = useMemo(
     () =>
-      messages.map(({ idMessage, statusMessage, textMessage, date, time }) => (
-        <StyledMessageContainer
-          key={idMessage ?? textMessage}
-          incoming={!!statusMessage}
-        >
-          <StyledMessage>
-            {textMessage}
-            {statusMessage && (
-              <StyledIconMessage statusMessage={statusMessage}>
-                {statusMessage === DEL || statusMessage === READ ? (
-                  <Check />
-                ) : (
-                  <CheckOne />
+      messages.map(
+        ({ idMessage, statusMessage, textMessage, date, time }) =>
+          idMessage && (
+            <StyledMessageContainer key={idMessage} incoming={!!statusMessage}>
+              <StyledMessage>
+                {textMessage ?? ''}
+                {statusMessage && (
+                  <StyledIconMessage statusMessage={statusMessage}>
+                    {statusMessage === DEL || statusMessage === READ ? (
+                      <Check />
+                    ) : (
+                      <CheckOne />
+                    )}
+                  </StyledIconMessage>
                 )}
-              </StyledIconMessage>
-            )}
-          </StyledMessage>
-          <StyledDateWrapper>
-            <StyledDate>{date}</StyledDate>
-            <StyledTime>{time}</StyledTime>
-          </StyledDateWrapper>
-        </StyledMessageContainer>
-      )),
-    [messages],
+              </StyledMessage>
+              <StyledDateWrapper>
+                {date && <StyledDate>{date}</StyledDate>}
+                {time && <StyledTime>{time}</StyledTime>}
+              </StyledDateWrapper>
+            </StyledMessageContainer>
+          ),
+      ),
+    [messages, activeChat],
   );
 
   return (

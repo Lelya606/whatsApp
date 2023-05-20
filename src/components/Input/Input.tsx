@@ -1,12 +1,12 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 interface IInputProps {
   type: string;
   placeholder?: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChange: (value: string) => void;
   value?: string;
-  onKeyDown: () => void;
+  onKeyDown?: () => void;
 }
 
 export const Input = ({
@@ -17,14 +17,14 @@ export const Input = ({
   value,
 }: IInputProps) => {
   const handleKeyDown = (key: string) => {
-    if (key === 'Enter') onKeyDown();
+    if (key === 'Enter') onKeyDown && onKeyDown();
   };
 
   return (
     <StyledInput
       type={type}
       placeholder={placeholder}
-      onChange={onChange}
+      onChange={event => onChange(event.currentTarget.value)}
       value={value}
       onKeyDown={event => handleKeyDown(event.key)}
     />

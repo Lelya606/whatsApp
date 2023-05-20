@@ -1,15 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
+import { StoreManager } from 'context/store';
 import { MainWrapper } from 'components/HOC/MainWrapper';
 import { DialogWindow } from 'components/DialogWindow/DialogWindow';
 import { Chats } from 'components/Chats/Chats';
 
 export const Messenger = () => (
   <MainWrapper>
-    <StyledMessenger>
-      <Chats />
-      <DialogWindow />
-    </StyledMessenger>
+    <StoreManager>
+      <StyledMessenger>
+        <Chats />
+        <DialogWindow />
+      </StyledMessenger>
+    </StoreManager>
   </MainWrapper>
 );
 

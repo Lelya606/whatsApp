@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react';
-import { checkMessages } from 'services/messagesService';
+import { useNavigate } from 'react-router-dom';
+import { checkMessages, deleteMessage } from 'services/messagesService';
 import { useStoreContextManager } from 'context/store';
 import { IChat, IMessage } from 'context/types';
+import { useAuth } from 'context/auth';
 import { changeFormatDate, changeTime } from 'utils/common';
-import { STATUS_MESSAGE } from 'constants/common';
+import {
+  AUTH,
+  AUTH_STATUS,
+  ROUTS,
+  STATUS_MESSAGE,
+  UNKNOWN_MESSAGE,
+} from 'constants/common';
+import { AuthType } from 'types/authType';
+import { deleteLocalStorage } from 'services/storageService';
 
 interface INewMessage {
   data?: IChat & IMessage;
@@ -11,11 +21,28 @@ interface INewMessage {
 }
 
 const { READ } = STATUS_MESSAGE;
+const { AUTHORIZED } = AuthType;
+const { API_TOKEN_INSTANCE, ID_INSTANCE } = AUTH;
+const { LOGIN } = ROUTS;
 
 export const useGetNotification = () => {
-  const { activeChat, auth } = useStoreContextManager();
-  const { apiTokenInstance, idInstance } = auth;
+  const navigate = useNavigate();
+  const { auth, setAuth } = useAuth();
+  const { activeChat } = useStoreContextManager();
   const [newMessage, setNewMessage] = useState<INewMessage | null>(null);
+
+  const logOut = (stateInstance: AuthType, receiptId: string) => {
+    deleteMessage({ receiptId, ...auth });
+    deleteLocalStorage(API_TOKEN_INSTANCE);
+    deleteLocalStorage(ID_INSTANCE);
+    setAuth &&
+      setAuth({
+        apiTokenInstance: '',
+        idInstance: '',
+      });
+    navigate(LOGIN);
+    alert(AUTH_STATUS[stateInstance as AuthType]);
+  };
 
   const changeMessages = (
     dataMessage: { textMessage?: string },
@@ -23,8 +50,10 @@ export const useGetNotification = () => {
     timestamp: number,
     chatId: string,
   ) => {
-    const { textMessage } = dataMessage;
-    const message = textMessage ?? 'неизвестный формат сообщения';
+    const message =
+      dataMessage && dataMessage.textMessage
+        ? dataMessage.textMessage
+        : UNKNOWN_MESSAGE;
     const date = new Date(timestamp * 1000);
     const statusMessage = chatId === activeChat.chatId ? READ : undefined;
     return {
@@ -40,8 +69,10 @@ export const useGetNotification = () => {
     chatId: string,
     dataMessage: { textMessage?: string },
   ) => {
-    const { textMessage } = dataMessage;
-    const message = textMessage ?? 'неизвестный формат сообщения';
+    const message =
+      dataMessage && dataMessage.textMessage
+        ? dataMessage.textMessage
+        : UNKNOWN_MESSAGE;
     const [phone] = chatId.split('@');
     return {
       chatId,
@@ -62,8 +93,12 @@ export const useGetNotification = () => {
       instanceData,
       status,
       chatId,
+      stateInstance,
     } = body;
     let data;
+    if (stateInstance && stateInstance !== AUTHORIZED) {
+      return logOut(stateInstance, receiptId);
+    }
     if (messageData && senderData && senderData.chatId === activeChat.chatId) {
       data = changeMessages(
         messageData.textMessageData,
@@ -93,10 +128,9 @@ export const useGetNotification = () => {
   };
 
   useEffect(() => {
-    if (!apiTokenInstance || !idInstance) return;
     const messages = setInterval(() => {
       check();
-    }, 30000);
+    }, 10000);
 
     return () => clearInterval(messages);
   });

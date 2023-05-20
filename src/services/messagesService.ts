@@ -38,7 +38,6 @@ export const checkMessages = async (data: IAuth) => {
 export const deleteMessage = async (data: IDeleteMessage) => {
   try {
     const response = await messagesApi.delete(data);
-    console.log(response);
     return response.data;
   } catch (err) {
     return err;
