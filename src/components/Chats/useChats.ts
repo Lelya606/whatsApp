@@ -24,7 +24,6 @@ export const useChats = () => {
     const { data, receiptId } = newMessage;
     if (data) {
       const { phone, statusMessage, textMessage, idMessage, chatId } = data;
-      console.log(data);
       if (phone && chatId) setDataChats(data, chatId);
       if (textMessage) addMessageActiveChat(data);
       if (statusMessage && idMessage && !textMessage) {
