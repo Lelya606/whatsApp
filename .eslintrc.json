@@ -89,6 +89,7 @@
         "@typescript-eslint/return-await": "off",
         "consistent-return": "off",
         "import/no-extraneous-dependencies": "off",
-        "linebreak-style": "off"
+        "linebreak-style": "off",
+        "endOfLine": "off"
     }
 }
