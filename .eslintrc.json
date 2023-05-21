@@ -71,7 +71,8 @@
             {
                 "singleQuote": true,
                 "parser": "typescript",
-                "usePrettierrc": false
+                "usePrettierrc": false,
+                "endOfLine": "auto"
             }
         ],
         "import/no-unresolved": 0,
@@ -89,7 +90,6 @@
         "@typescript-eslint/return-await": "off",
         "consistent-return": "off",
         "import/no-extraneous-dependencies": "off",
-        "linebreak-style": "off",
-        "endOfLine": "off"
+        "linebreak-style": "off"
     }
 }
