@@ -5,6 +5,8 @@ import { changeDataChats, changeMessages } from 'utils/common';
 import { IChat, IMessage } from 'context/types';
 import { useAuth } from 'context/auth';
 import { CHAT_ID, ERROR_MESSAGE } from 'constants/common';
+import { useGetNotification } from 'hooks/useGetNotification';
+import { deleteMessage } from 'services/messagesService';
 
 const { CHECK, UNUSED } = ERROR_MESSAGE;
 
@@ -15,6 +17,23 @@ export const useChats = () => {
   const { idInstance, apiTokenInstance } = auth;
   const [inputValue, setInputValue] = useState('');
   const [stateChats, setStateChats] = useState<IChat[]>([]);
+  const newMessage = useGetNotification();
+
+  useEffect(() => {
+    if (!newMessage) return;
+    const { data, receiptId } = newMessage;
+    if (data) {
+      const { phone, statusMessage, textMessage, idMessage, chatId } = data;
+      console.log(data);
+      if (phone && chatId) setDataChats(data, chatId);
+      if (textMessage) addMessageActiveChat(data);
+      if (statusMessage && idMessage && !textMessage) {
+        changeMessageActiveChat(data, idMessage, statusMessage);
+      }
+    }
+
+    deleteMessage({ receiptId, ...auth });
+  }, [newMessage]);
 
   useEffect(() => {
     !stateChats?.length && setStateChats(chats);
@@ -45,13 +64,13 @@ export const useChats = () => {
   };
 
   const addMessageActiveChat = (data: IMessage) => {
+    if (!messages.length) {
+      setMessages && setMessages([data]);
+      return;
+    }
     const findMessage = messages.find(el => el.idMessage === data.idMessage);
     if (findMessage) return;
-    setMessages &&
-      setMessages(prev => {
-        console.log([data, ...prev]);
-        return [data, ...prev];
-      });
+    setMessages && setMessages(prev => [data, ...prev]);
   };
 
   const changeMessageActiveChat = (
@@ -107,6 +126,7 @@ export const useChats = () => {
       const allMessages = await getMessages({ chatId: data.chatId, ...auth });
       if (!allMessages) return;
       const messagesInfo = changeMessages(allMessages);
+      if (!messagesInfo) return;
       setMessages && setMessages(messagesInfo);
       setActiveChat && setActiveChat(data);
     },
@@ -120,9 +140,5 @@ export const useChats = () => {
     onChangeInput,
     onClickInput,
     onClickCard,
-    auth,
-    changeMessageActiveChat,
-    addMessageActiveChat,
-    setDataChats,
   };
 };

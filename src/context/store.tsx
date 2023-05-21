@@ -36,7 +36,8 @@ export const StoreManager = ({ children }: IStoreManagerProps) => {
     }),
     [chats, setChats, activeChat, setActiveChat, messages, setMessages],
   );
-
+  console.log(store, 'store');
+  console.log(messages, 'messages');
   return (
     <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
   );

@@ -23,14 +23,14 @@ export const changeTime = (date: Date) => {
 };
 
 export const changeDataChats = (data: { id: string }[]) =>
-  data &&
+  !!data.length &&
   data.map(({ id }) => {
     const [phone] = id.split('@');
     return { chatId: id, phone: `+${phone}` };
   });
 
 export const changeMessages = (data: IMessageData[]) =>
-  data &&
+  !!data.length &&
   data.map(({ idMessage, statusMessage, textMessage, timestamp }) => {
     const newDate = new Date(timestamp * 1000);
     const date = changeFormatDate(newDate);

@@ -43,8 +43,8 @@ export const DialogWindow = () => {
     setMessages && setMessages(prev => [message, ...prev]);
     setValueInput('');
   };
-
-  const renderMessage = useMemo(
+  console.log(messages, 'dialog');
+  const renderMessages = useMemo(
     () =>
       messages.map(
         ({ idMessage, statusMessage, textMessage, date, time }) =>
@@ -78,7 +78,7 @@ export const DialogWindow = () => {
         <StyledDialog>
           <StyledHeader>{phone && <Card active title={phone} />}</StyledHeader>
           <StyLedBodyWrapper>
-            <StyLedBody>{!!messages.length && renderMessage}</StyLedBody>
+            <StyLedBody>{!!messages.length && renderMessages}</StyLedBody>
           </StyLedBodyWrapper>
           <StyledFooter>
             <Input
