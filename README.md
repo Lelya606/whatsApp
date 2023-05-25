@@ -4,6 +4,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Getting started
 
+Before starting work, you need to get: 
+idInstance - a unique account number
+apiTokenInstance - account access key. 
+To do this, follow the instructions on the link [Green API start](https://green-api.com/docs/before-start/)
+
 How to start project:
 ```
 npm install
@@ -20,3 +25,4 @@ Technologies used in this application:
 * [AXIOS](https://axios-http.com/docs/intro)
 * [ESLINT](https://eslint.org/)
 * [PRETTIER](https://prettier.io/)
+* [GREEN_API](https://green-api.com/)
